@@ -21,6 +21,14 @@ class TestNote(unittest.TestCase):
         self.note.save()
         # assert
         self.assertFalse(True)
+        
+    def test_TimeStamps(self):
+      # arrange
+      self.note.content = "new stuff"
+      # act
+      result = self.note.TimeStamps
+      # assert
+      self.assertEqual(2, len(result))
 
 
 
