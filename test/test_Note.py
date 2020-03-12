@@ -13,7 +13,9 @@ class TestNote(unittest.TestCase):
         self.assertEqual("", self.note.content)
         self.assertEqual(1, len(self.note.TimesStamps))
         first = [v for v in self.note.TimesStamps.values()]
-        self.assertIsNone(first[0])
+        self.assertTrue("!!python/object:Note.Note\nNodes: {}" in first[0])
+        self.assertTrue("\nTimesStamps:\n" in first[0])
+        self.assertTrue("Title: Test\ncontent: ''\n" in first[0])
 
     def test_save(self):
         # arrange
