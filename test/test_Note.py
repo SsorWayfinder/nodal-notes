@@ -10,11 +10,10 @@ class TestNote(unittest.TestCase):
     def test_init(self):
         # assert
         self.assertEqual("Test", self.note.Title)
-        self.assertEqual("", self.note.content)
+        self.assertEqual("", self.note.Content)
         self.assertEqual(1, len(self.note.TimeStamps))
         first = [v for v in self.note.TimeStamps.values()]
-        self.assertEqual("!!python/object:src.Note.Note\nNodes: {}\nTimeStamps: {}\nTitle: Test\ncontent: ''\n", first[0])
-        self.assertTrue("Title: Test\ncontent: ''\n" in first[0], "Value of the TimeStamp is actually:\n"+ first[0])
+        self.assertEqual("--- \n+++ \n@@ -0,0 +1,5 @@\n+!!python/object:src.Note.Note\n+TimeStamps: {}\n+_Note__Content: ''\n+_Note__Nodes: {}\n+_Note__Title: Test\n", first[0], 'first diff was:\n'+first[0])
 
     def test_save(self):
         # arrange
