@@ -22,13 +22,14 @@ class TestNote(unittest.TestCase):
         # assert
         self.assertFalse(True)
         
-    def test_TimeStamps(self):
+    def test_TimeStampsContent(self):
       # arrange
-      self.note.content = "new stuff"
+      self.note.Content = "new stuff"
       # act
       result = self.note.TimeStamps
       # assert
       self.assertEqual(2, len(result))
+      self.assertEqual("+_Note__Content: 'new stuff'\n", result[max(result.keys())])
 
 
 
