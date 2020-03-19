@@ -1,6 +1,6 @@
 import time
 import yaml
-import difflib
+import copy
 
 
 class Note:
@@ -42,12 +42,15 @@ class Note:
         # diff = ''.join(diff)
         previous_lines = list()
         if len(self.TimeStamps) > 0:
-            previous_lines = self.TimeStamps[max(self.TimeStamps.keys())].split('\\n')
+            previous_lines = self.TimeStamps[max(self.TimeStamps.keys())].split('\t')
 
         previous_length = len(previous_lines)
         for i in range(previous_length):
             previous_lines[i] = previous_lines[i][3:]
-        current_lines = yaml.dump(self).split('\n')
+
+        current_copy = copy.deepcopy(self)
+        current_copy.TimeStamps.clear()
+        current_lines = yaml.dump(current_copy).split('\n')
         current_length = len(current_lines)
         result = list()
         for i in range(current_length):
@@ -62,7 +65,7 @@ class Note:
                 index = current_length+i
                 result.append(str(index)+"- "+previous_lines[index])
 
-        self.TimeStamps[time.time()] = '\\n'.join(result)
+        self.TimeStamps[time.time()] = '\t'.join(result)
 
     def save(self, name: str = ""):
         if len(name) == 0:
