@@ -19,6 +19,7 @@ class Note:
     @title.setter
     def title(self, title):
         self.__Title = title
+        self._update_time_stamps()
 
     @property
     def content(self):
@@ -29,13 +30,14 @@ class Note:
         self.__Content = content
         self._update_time_stamps()
 
-    @property
-    def nodes(self):
-        return self.__Nodes
-
-    @nodes.setter
-    def nodes(self, nodes):
-        self.__Nodes = nodes
+    def add_node(self, note):
+        if 'connected' not in self.__Nodes.keys(): # TODO move to const? 
+            self.__Nodes['connected'] = list()
+        self.__Nodes['connected'].append( note) # TODO add a more general function that takes a name
+        self._update_time_stamps()
+    
+    def get_nodes(self): # TODO add a more general function that takes a name 
+        return self.__Nodes['connected']
 
     def _update_time_stamps(self):  # , previous):
         # diff = difflib.ndiff(previous.splitlines(), yaml.dump(self).splitlines(1))
