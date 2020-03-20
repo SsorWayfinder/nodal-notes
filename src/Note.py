@@ -31,17 +31,15 @@ class Note:
         self._update_time_stamps()
 
     def add_node(self, note):
-        if 'connected' not in self.__Nodes.keys(): # TODO move to const? 
+        if 'connected' not in self.__Nodes.keys():  # TODO move to const?
             self.__Nodes['connected'] = list()
-        self.__Nodes['connected'].append( note) # TODO add a more general function that takes a name
+        self.__Nodes['connected'].append(note)  # TODO add a more general function that takes a name
         self._update_time_stamps()
     
-    def get_nodes(self): # TODO add a more general function that takes a name 
+    def get_nodes(self):  # TODO add a more general function that takes a name
         return self.__Nodes['connected']
 
     def _update_time_stamps(self):  # , previous):
-        # diff = difflib.ndiff(previous.splitlines(), yaml.dump(self).splitlines(1))
-        # diff = ''.join(diff)
         previous_lines = list()
         if len(self.TimeStamps) > 0:
             previous_lines = self.TimeStamps[max(self.TimeStamps.keys())].split('\t')
@@ -52,7 +50,7 @@ class Note:
 
         current_copy = copy.deepcopy(self)
         current_copy.TimeStamps.clear()
-        current_lines = yaml.dump(current_copy).split('\n')
+        current_lines = current_copy.serialize().split('\n')
         current_length = len(current_lines)
         result = list()
         for i in range(current_length):
@@ -67,8 +65,10 @@ class Note:
                 index = current_length+i
                 result.append(str(index)+"- "+previous_lines[index])
 
-        self.TimeStamps[time.time()] = '\t'.join(result)
+        current_time = time.time()
+        if current_time in self.TimeStamps.keys():
+            current_time += .0000001
+        self.TimeStamps[current_time] = '\t'.join(result)
 
-    def save(self, name: str = ""):
-        if len(name) == 0:
-            name = self.title
+    def serialize(self):
+        return yaml.dump(self)

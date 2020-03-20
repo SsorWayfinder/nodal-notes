@@ -30,12 +30,29 @@ class TestNote(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(new_note, result[0])
 
-    def test_save(self):
+    def test_add_node_circular(self):
+        # arrange
+        new_note = Note.Note("New Note")
+        self.note.add_node(new_note)
+        new_note.add_node(self.note)
+        # act
+        result = new_note.serialize()
+        # assert
+        self.assertEqual(result[:36], '&id001 !!python/object:src.Note.Note')
+        self.assertTrue('*id001' in result)
+
+    def test_serialize(self):
         # arrange
         # act
-        self.note.save()
+        result = self.note.serialize()
         # assert
-        self.assertFalse(True)
+        result = result.split('\n')
+        self.assertEqual("!!python/object:src.Note.Note", result[0])
+        self.assertEqual("TimeStamps:", result[1])
+        # skipped the content of TimeStamps
+        self.assertEqual("_Note__Content: ''", result[4])
+        self.assertEqual("_Note__Nodes: {}", result[5])
+        self.assertEqual("_Note__Title: Test", result[6])
 
     def test_TimeStampsContent(self):
         # arrange
@@ -43,7 +60,7 @@ class TestNote(unittest.TestCase):
         # act
         result = self.note.TimeStamps
         # assert
-        self.assertEqual(2, len(result))
+        self.assertEqual(2, len(result), result)
         diff = result[max(result.keys())].split('\t')
         self.assertEqual(1, len(diff))
         self.assertEqual("2c _Note__Content: ''-->>_Note__Content: new stuff", diff[0])
@@ -68,19 +85,23 @@ class TestNote(unittest.TestCase):
         # assert
         self.assertEqual(2, len(result), result)
         diff = result[max(result.keys())].split('\t')
-        self.assertEqual(1, len(diff), diff)
-        self.assertEqual('3c _Note__Nodes: {}-->>_Note__Nodes: ' \
-                '{\n' \
-                '!!python/object:src.Note.Note\n' \
-                'TimeStamps: {}\n' \
-                '_Node__Content: ""\n' \
-                '_Node__Nodes: {}\n' \
-                '_Node__Title: Something Else\n' \
-                '}', diff[0])
+        self.assertEqual(11, len(diff), diff)
+        self.assertEqual('3c _Note__Nodes: {}-->>_Note__Nodes:', diff[0])
+        self.assertEqual('4c _Note__Title: Test-->>  connected:', diff[1])
+        self.assertEqual('5c -->>  - !!python/object:src.Note.Note', diff[2])
+        self.assertEqual('6+     TimeStamps:', diff[3])
+        # skipped the line with the actual TimeStamp
+        self.assertEqual('8+         \\ _Note__Content: \'\'\\t3+ _Note__Nodes: {}\\t4+ _Note__Title: New Note\\t5+ "',
+                         diff[5])
+        self.assertEqual("9+     _Note__Content: ''", diff[6])
+        self.assertEqual('10+     _Note__Nodes: {}', diff[7])
+        self.assertEqual('11+     _Note__Title: New Note', diff[8])
+        self.assertEqual('12+ _Note__Title: Test', diff[9])
+        self.assertEqual('13+ ', diff[10])
 
 
 
 if __name__ == "__main__":
       unittest.main()
-    
+
 
