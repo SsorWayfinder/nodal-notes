@@ -5,6 +5,8 @@ import copy
 
 class Note:
 
+    default_nodes_list = "connected"
+
     def __init__(self, title: str, initial_content: str = ""):
         self.__Title = title
         self.TimeStamps = dict()
@@ -30,14 +32,14 @@ class Note:
         self.__Content = content
         self._update_time_stamps()
 
-    def add_node(self, note):
-        if 'connected' not in self.__Nodes.keys():  # TODO move to const?
-            self.__Nodes['connected'] = list()
-        self.__Nodes['connected'].append(note)  # TODO add a more general function that takes a name
+    def add_node(self, note, list_name: str = default_nodes_list):
+        if list_name not in self.__Nodes.keys():
+            self.__Nodes[list_name] = list()
+        self.__Nodes[list_name].append(note)
         self._update_time_stamps()
-    
-    def get_nodes(self):  # TODO add a more general function that takes a name
-        return self.__Nodes['connected']
+
+    def get_nodes(self, list_name: str = default_nodes_list):  # TODO add a more general function that takes a name
+        return self.__Nodes[list_name]
 
     def _update_time_stamps(self):  # , previous):
         previous_lines = list()
@@ -55,15 +57,15 @@ class Note:
         result = list()
         for i in range(current_length):
             if i >= len(previous_lines):
-                result.append(str(i)+"+ "+current_lines[i])
+                result.append(str(i) + "+ " + current_lines[i])
                 continue
             if previous_lines[i] == current_lines[i]:
                 continue
-            result.append(str(i)+"c "+previous_lines[i]+"-->>"+current_lines[i])
+            result.append(str(i) + "c " + previous_lines[i] + "-->>" + current_lines[i])
         if current_length < previous_length:
             for i in range(previous_length - current_length):
-                index = current_length+i
-                result.append(str(index)+"- "+previous_lines[index])
+                index = current_length + i
+                result.append(str(index) + "- " + previous_lines[index])
 
         current_time = time.time()
         if current_time in self.TimeStamps.keys():

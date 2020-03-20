@@ -30,6 +30,16 @@ class TestNote(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(new_note, result[0])
 
+    def test_add_node_nonstandard_list(self):
+        # arrange
+        new_note = Note.Note("New Note")
+        self.note.add_node(new_note, "SomeNotes")
+        # act
+        result = self.note.get_nodes("SomeNotes")
+        # assert
+        self.assertEqual(1, len(result))
+        self.assertEqual(new_note, result[0])
+
     def test_add_node_circular(self):
         # arrange
         new_note = Note.Note("New Note")
@@ -100,8 +110,5 @@ class TestNote(unittest.TestCase):
         self.assertEqual('13+ ', diff[10])
 
 
-
 if __name__ == "__main__":
-      unittest.main()
-
-
+    unittest.main()
