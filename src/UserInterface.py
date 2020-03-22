@@ -19,12 +19,17 @@ def main():
 
 
 def new(in_args):
+    if len(in_args) != 1:
+        print("Incorrect number of arguments!")
+        return
     name = in_args[0]
     note = Note(name)
     open_notes[name] = note
 
 
 def add_content(in_args):
+    if len(in_args) != 1:
+        print("Incorrect number of arguments!")
     name = in_args[0]
     if name not in open_notes.keys():
         print("Note " + name + " is not open!")
@@ -35,6 +40,9 @@ def add_content(in_args):
 
 
 def connect_notes(in_args):
+    if len(in_args) != 3:
+        print("Incorrect number of arguments!")
+        return
     from_name = in_args[0]
     to_name = in_args[1]
     connection_name = in_args[2]
@@ -49,6 +57,9 @@ def connect_notes(in_args):
 
 
 def save(in_args):
+    if len(in_args) != 2:
+        print("Incorrect number of arguments!")
+        return
     name = in_args[0]
     note_name = in_args[1]
     if note_name not in open_notes.keys():
@@ -59,6 +70,9 @@ def save(in_args):
 
 
 def load(in_args):
+    if len(in_args) != 2:
+        print("Incorrect number of arguments!")
+        return
     name = in_args[0]
     note_name = in_args[1]
     file = open(name, 'r')
